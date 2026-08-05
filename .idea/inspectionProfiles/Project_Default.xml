@@ -1,0 +1,44 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="babel" />
+          <option value="blinker" />
+          <option value="certifi" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="cloudinary" />
+          <option value="colorama" />
+          <option value="coverage" />
+          <option value="Flask" />
+          <option value="Flask-Admin" />
+          <option value="flask-babel" />
+          <option value="Flask-Login" />
+          <option value="Flask-SQLAlchemy" />
+          <option value="greenlet" />
+          <option value="idna" />
+          <option value="iniconfig" />
+          <option value="itsdangerous" />
+          <option value="Jinja2" />
+          <option value="MarkupSafe" />
+          <option value="packaging" />
+          <option value="pluggy" />
+          <option value="Pygments" />
+          <option value="PyMySQL" />
+          <option value="pytest" />
+          <option value="pytest-cov" />
+          <option value="pytz" />
+          <option value="requests" />
+          <option value="six" />
+          <option value="SQLAlchemy" />
+          <option value="typing_extensions" />
+          <option value="urllib3" />
+          <option value="Werkzeug" />
+          <option value="WTForms" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
