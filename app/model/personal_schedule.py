@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, DateTime, Boolean, Time
-from sqlalchemy.orm import relationship
-from app.db.base import Base,ProgressStatus,PathStatus
-from datetime import datetime
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, Time
+from app.db.base import Base
 
 class PersonalSchedule(Base):
     __tablename__ = "personal_schedule"
@@ -13,6 +11,3 @@ class PersonalSchedule(Base):
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
     is_reminder_enabled = Column(Boolean, default=True)
-
-    users = relationship("User", back_populates="schedules")
-    courses = relationship("Course")

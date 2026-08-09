@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.api.deps import get_db, get_current_active_user
-from app.db.base import PathStatus
 from app.model.learning_path import PathNode,LearningPath
 from app.model.personal_schedule import PersonalSchedule
 from app.model.course import Course
@@ -24,11 +23,10 @@ def create_user_schedule(data:ScheduleCreate,db:Session=Depends(get_db),current_
 
     node = db.query(PathNode).join(LearningPath).filter(
         LearningPath.user_id == current_user.id,
-        LearningPath.status == PathStatus.ACTIVE,
         PathNode.course_id == data.course_id
     ).first()
 
-    if not node or not node.is_unlocked:
+    if not node:
         raise HTTPException(status_code=403)
 
     created_schedules=[]

@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional,List
-from app.db.base import ProgressStatus
 
 class CourseBase(BaseModel):
     title: str
@@ -20,10 +19,3 @@ class CourseResponse(CourseBase):
     class Config:
         from_attributes= True
 
-class CourseProgressResponse(BaseModel):
-    course_id: int
-    status: ProgressStatus
-    is_unlocked: bool
-    total_lessons: int
-    completed_lessons: int
-    progress_percentage: float

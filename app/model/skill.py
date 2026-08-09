@@ -32,5 +32,5 @@ class UserSkill(Base):
     # Đánh giá mức độ tự tin với kỹ năng này (1 đến 5 sao)
     proficiency_level = Column(Integer, default=3)
 
-    users = relationship("User", back_populates="prior_skills")
-    skills = relationship("Skill")
+
+    skill = relationship("Skill")
