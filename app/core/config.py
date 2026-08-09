@@ -1,6 +1,22 @@
-from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
 
-class Settings(BaseModel):
-    DATABASE_URI: str = 'mysql+pymysql://root:hod2t123@localhost:3306/learningpathdb'
+BASE_DIR = Path(__file__).resolve().parents[2]
+class Settings(BaseSettings):
+    DATABASE_URI: str
+
+    OPENCODE_API_KEY: str | None = None
+    LLM_MODEL: str = "deepseek-v4-flash"
+    LLM_BASE_URL: str
+    EMBEDDING_MODEL: str = "BAAI/bge-m3"
+    QDRANT_PATH: str = "qdrant_storage"
+    QDRANT_COLLECTION: str = "learning_knowledge"
+
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
 
 settings = Settings()
