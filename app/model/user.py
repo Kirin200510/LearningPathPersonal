@@ -14,7 +14,6 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     #Relationship
-    learning_paths = relationship("LearningPath", back_populates="users")
-    lesson_progresses = relationship("LessonProgress", back_populates="users")
-    schedules = relationship("PersonalSchedule", back_populates="users")
-    prior_skills = relationship(    "UserSkill", back_populates="users", cascade="all, delete-orphan")
+    learning_paths = relationship("LearningPath", cascade="all, delete-orphan")
+    schedules = relationship("PersonalSchedule",cascade="all, delete-orphan")
+    known_skills = relationship(    "UserSkill", cascade="all, delete-orphan")

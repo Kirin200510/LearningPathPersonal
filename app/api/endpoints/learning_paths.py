@@ -5,9 +5,7 @@ from typing import List
 from app.api.deps import get_db, get_current_user, get_valid_learning_path
 from app.model.learning_path import LearningPath, PathNode
 from app.model.user import User
-from app.schemas.learning_path import LearningPathCreate, LearningPathResponse, PathNodeResponse, \
-    LearningPathProgressResponse
-from app.db.base import PathStatus, ProgressStatus
+from app.schemas.learning_path import LearningPathCreate, LearningPathResponse, PathNodeResponse
 
 router = APIRouter()
 
@@ -16,7 +14,7 @@ def create_learning_path(data:LearningPathCreate, db: Session = Depends(get_db),
     if not data.course_ids:
         raise HTTPException(status_code=400, detail="Courses are required")
 
-    new_path = LearningPath(user_id=current_user.id, career_goal_id=data.career_goal_id,status=PathStatus.ACTIVE)
+    new_path = LearningPath(user_id=current_user.id, career_goal_id=data.career_goal_id)
     db.add(new_path)
     db.flush()
     list_nodes=[]
@@ -25,7 +23,7 @@ def create_learning_path(data:LearningPathCreate, db: Session = Depends(get_db),
             is_first_course = True
         else:
             is_first_course = False
-        node=PathNode(learning_path_id=new_path.id,course_id=course_id,is_unlocked=is_first_course,sequence_order=index+1,status=ProgressStatus.TODO)
+        node=PathNode(learning_path_id=new_path.id,course_id=course_id,sequence_order=index+1)
         list_nodes.append(node)
 
     db.add_all(list_nodes)
@@ -43,22 +41,3 @@ def get_learning_paths(current_user: User = Depends(get_current_user),db: Sessio
 def get_learning_path_nodes(path: LearningPath=Depends(get_valid_learning_path))->List[PathNodeResponse]:
     return path.nodes
 
-@router.get("/learning_path/{id}/progress/")
-def get_learning_path_progress(path: LearningPath=Depends(get_valid_learning_path))->LearningPathProgressResponse:
-    nodes=path.nodes
-    total_courses=len(nodes)
-
-    if total_courses==0:
-        return LearningPathProgressResponse(
-            learning_path_id=path.id,
-            total_courses=0,
-            completed_courses=0,
-            progress_percentage=0.0)
-    completed_courses = sum(1 for node in nodes if node.status == ProgressStatus.COMPLETED)
-    progress_percentage = (completed_courses / total_courses) * 100.0
-    return LearningPathProgressResponse(
-        learning_path_id=path.id,
-        total_courses=total_courses,
-        completed_courses=completed_courses,
-        progress_percentage=round(progress_percentage, 2)
-    )

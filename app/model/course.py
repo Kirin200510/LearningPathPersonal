@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,DateTime,ForeignKey,Text
+from sqlalchemy import Column,Integer,String,ForeignKey,Text
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -12,7 +12,6 @@ class Course(Base):
     estimated_hours = Column(Integer, nullable=True)
 
     skills = relationship("CourseSkill", back_populates="courses")
-    lessons =relationship("Lesson", back_populates="courses", order_by="Lesson.sequence_order")
 
 #Khóa học tiên quyết
 class CoursePrerequisite(Base):
