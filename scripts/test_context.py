@@ -8,12 +8,17 @@ def main() -> None:
         "Backend Developer?"
     )
 
-    points = retrieve_chunks(
+    results = retrieve_chunks(
         query=query,
         limit=3,
     )
 
-    context = build_context(points)
+    documents = [
+        document
+        for document, _score in results
+    ]
+
+    context = build_context(documents)
 
     print("QUERY:")
     print(query)
@@ -21,7 +26,6 @@ def main() -> None:
     print("\n" + "=" * 70)
     print("CONTEXT:")
     print("=" * 70)
-
     print(context)
 
 
