@@ -1,36 +1,59 @@
+from langchain_core.output_parsers import StrOutputParser
+
 from app.rag.context_builder import build_context
-from app.rag.llm import generate_answer
-from app.rag.prompt_builder import build_prompt
+from app.rag.llm import get_llm
+from app.rag.prompt_builder import get_rag_prompt
 from app.rag.retriever import retrieve_chunks
 
 
-def answer_question(query: str,limit: int = 3) -> dict:
+def answer_question(
+    query: str,
+    limit: int = 3,
+) -> dict:
     if not query.strip():
         raise ValueError("Query cannot be empty.")
 
-    points = retrieve_chunks(
+    results = retrieve_chunks(
         query=query,
         limit=limit,
     )
 
-    context = build_context(points)
+    documents = [
+        document
+        for document, _score in results
+    ]
 
-    prompt = build_prompt(
-        query=query,
-        context=context,
+    context = build_context(documents)
+
+    chain = (
+        get_rag_prompt()
+        | get_llm()
+        | StrOutputParser()
     )
 
-    answer = generate_answer(prompt)
-    sources=[]
-    for point in points:
-        payload = point.payload or {}
-        sources.append({
-            "document_name": payload.get("document_name"),
-            "title": payload.get("title"),
-            "section_title": payload.get("section_title"),
-            "score": point.score,
-            "source_urls": payload.get("source_urls", [])
-        })
+    answer = chain.invoke(
+        {
+            "context": context,
+            "question": query,
+        }
+    )
 
+    sources = []
 
-    return dict(answer=answer, sources=sources)
+    for document, score in results:
+        metadata = document.metadata
+
+        sources.append(
+            {
+                "document_name": metadata.get("document_name"),
+                "title": metadata.get("title"),
+                "section_title": metadata.get("section_title"),
+                "score": score,
+                "source_urls": metadata.get("source_urls", []),
+            }
+        )
+
+    return {
+        "answer": answer,
+        "sources": sources,
+    }
