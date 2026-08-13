@@ -1,7 +1,7 @@
 from app.rag.retriever import retrieve_chunks
 
 
-def main():
+def main() -> None:
     query = "Tôi cần học gì để trở thành Backend Developer?"
 
     results = retrieve_chunks(
@@ -12,31 +12,19 @@ def main():
     print("QUERY:")
     print(query)
 
-    for index, point in enumerate(results, start=1):
+    for index, (document, score) in enumerate(results, start=1):
         print("\n" + "=" * 70)
-
         print(f"Kết quả #{index}")
-        print(f"Score: {point.score}")
+        print(f"Score: {score}")
 
-        payload = point.payload or {}
+        metadata = document.metadata
 
-        print(
-            "Document:",
-            payload.get("document_name"),
-        )
-
-        print(
-            "Title:",
-            payload.get("title"),
-        )
-
-        print(
-            "Section:",
-            payload.get("section_title"),
-        )
+        print("Document:", metadata.get("document_name"))
+        print("Title:", metadata.get("title"))
+        print("Section:", metadata.get("section_title"))
 
         print("\nText:")
-        print(payload.get("text"))
+        print(document.page_content)
 
 
 if __name__ == "__main__":
