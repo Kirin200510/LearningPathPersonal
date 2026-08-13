@@ -1,24 +1,31 @@
 from app.rag.context_builder import build_context
-from app.rag.prompt_builder import build_prompt
+from app.rag.prompt_builder import get_rag_prompt
 from app.rag.retriever import retrieve_chunks
 
 
-def main():
+def main() -> None:
     query = "Tôi cần học gì để trở thành Backend Developer?"
 
-    points = retrieve_chunks(
+    results = retrieve_chunks(
         query=query,
         limit=3,
     )
 
-    context = build_context(points)
+    documents = [
+        document
+        for document, _score in results
+    ]
 
-    prompt = build_prompt(
-        query=query,
-        context=context,
+    context = build_context(documents)
+
+    prompt_value = get_rag_prompt().invoke(
+        {
+            "context": context,
+            "question": query,
+        }
     )
 
-    print(prompt)
+    print(prompt_value.to_string())
 
 
 if __name__ == "__main__":
