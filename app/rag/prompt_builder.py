@@ -1,21 +1,21 @@
-def build_prompt(
-    query: str,
-    context: str,
-) -> str:
-    return f"""
-Bạn là trợ lý tư vấn lộ trình học Công nghệ thông tin.
+from langchain_core.prompts import ChatPromptTemplate
 
-Hãy trả lời câu hỏi của người dùng dựa trên thông tin
-trong CONTEXT bên dưới.
 
-Nếu CONTEXT không có đủ thông tin để trả lời,
-hãy nói rằng chưa có đủ thông tin.
+RAG_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            "Bạn là trợ lý tư vấn lộ trình học Công nghệ thông tin. "
+            "Chỉ trả lời dựa trên CONTEXT được cung cấp. "
+            "Nếu CONTEXT không đủ thông tin, hãy nói rõ rằng chưa có đủ thông tin.",
+        ),
+        (
+            "human",
+            "CONTEXT:\n{context}\n\nQUESTION:\n{question}",
+        ),
+    ]
+)
 
-CONTEXT:
-{context}
 
-QUESTION:
-{query}
-
-ANSWER:
-""".strip()
+def get_rag_prompt() -> ChatPromptTemplate:
+    return RAG_PROMPT
