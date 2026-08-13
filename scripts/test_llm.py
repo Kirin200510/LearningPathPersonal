@@ -1,18 +1,13 @@
-from app.rag.llm import generate_answer
+from app.rag.llm import get_llm
 
 
 def main() -> None:
-    prompt = """
-Bạn là trợ lý học tập.
-
-Hãy trả lời ngắn gọn:
-Backend Developer là gì?
-""".strip()
-
-    answer = generate_answer(prompt)
+    response = get_llm().invoke(
+        "Backend Developer là gì? Trả lời ngắn gọn."
+    )
 
     print("ANSWER:")
-    print(answer)
+    print(response.content)
 
 
 if __name__ == "__main__":
