@@ -17,23 +17,25 @@ def main() -> None:
         )
         return
 
-    chunks = load_document_chunks(DOCUMENT_PATH)
+    documents = load_document_chunks(DOCUMENT_PATH)
 
     print(f"Document: {DOCUMENT_PATH.name}")
-    print(f"Tổng số chunk: {len(chunks)}")
+    print(f"Tổng số chunk: {len(documents)}")
 
-    for chunk in chunks:
+    for document in documents:
+        metadata = document.metadata
+
         print("\n" + "=" * 70)
-        print(f"Chunk index: {chunk.chunk_index}")
-        print(f"Document ID: {chunk.document_id}")
-        print(f"Tiêu đề nghề: {chunk.title}")
-        print(f"Section: {chunk.section_title}")
-        print(f"Số ký tự: {len(chunk.text)}")
+        print(f"Chunk index: {metadata.get('chunk_index')}")
+        print(f"Document ID: {metadata.get('document_id')}")
+        print(f"Tiêu đề nghề: {metadata.get('title')}")
+        print(f"Section: {metadata.get('section_title')}")
+        print(f"Số ký tự: {len(document.page_content)}")
 
         print("\nNội dung:")
-        print(chunk.text[:500])
+        print(document.page_content[:500])
 
-        if len(chunk.text) > 500:
+        if len(document.page_content) > 500:
             print("...")
 
 
