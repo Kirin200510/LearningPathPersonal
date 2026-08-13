@@ -46,6 +46,10 @@ ir_datasets==0.6.3
 Jinja2==3.1.6
 jiter==0.16.0
 joblib==1.5.3
+langchain
+langchain-openai
+langchain-qdrant
+langchain-text-splitters
 lxml==6.1.1
 lz4==4.4.5
 markdown-it-py==4.2.0
@@ -70,7 +74,7 @@ psutil==7.2.2
 pwdlib==0.3.0
 pyarrow==25.0.0
 pyasn1==0.6.4
-pycparser==3.0
+pycparser==3.0.4
 pydantic==2.13.4
 pydantic-extra-types==2.11.1
 pydantic-settings==2.14.2
