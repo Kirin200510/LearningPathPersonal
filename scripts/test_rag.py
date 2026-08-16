@@ -1,33 +1,26 @@
-from app.rag.context_builder import build_context
-from app.rag.llm import generate_answer
-from app.rag.prompt_builder import build_prompt
-from app.rag.retriever import retrieve_chunks
+from app.rag.chain import get_rag_chain
 
 
-def main() -> None:
-    query = "Tôi thích phân tích dữ liệu và tạo báo cáo, nghề nào phù hợp?"
+def main():
+    rag_chain = get_rag_chain()
 
-    points = retrieve_chunks(
-        query=query,
-        limit=3,
+    question = (
+        "Tôi cần học gì để "
+        "trở thành Backend Developer?"
     )
 
-    context = build_context(points)
-
-    prompt = build_prompt(
-        query=query,
-        context=context,
+    answer = rag_chain.invoke(
+        question
     )
-
-    answer = generate_answer(prompt)
 
     print("QUESTION:")
-    print(query)
+    print(question)
 
-    print("\nCONTEXT:")
-    print(context)
+    print(
+        "\n" + "=" * 70
+    )
 
-    print("\nANSWER:")
+    print("ANSWER:")
     print(answer)
 
 

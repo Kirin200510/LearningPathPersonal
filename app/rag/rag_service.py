@@ -1,36 +1,25 @@
-from app.rag.context_builder import build_context
-from app.rag.llm import generate_answer
-from app.rag.prompt_builder import build_prompt
-from app.rag.retriever import retrieve_chunks
+from app.rag.chain import get_rag_chain
+
+def answer_question(question: str,session_id: str) -> str:
+
+    question = question.strip()
+    session_id = session_id.strip()
+
+    if not question or not session_id:
+        raise ValueError(
+            "Question, Session ID cannot be empty."
+        )
 
 
-def answer_question(query: str,limit: int = 3) -> dict:
-    if not query.strip():
-        raise ValueError("Query cannot be empty.")
-
-    points = retrieve_chunks(
-        query=query,
-        limit=limit,
+    rag_chain = get_rag_chain()
+    answer = rag_chain.invoke(
+        {
+        "question":question
+        },
+        config={
+            "configurable": {
+                "session_id": session_id
+            }
+        }
     )
-
-    context = build_context(points)
-
-    prompt = build_prompt(
-        query=query,
-        context=context,
-    )
-
-    answer = generate_answer(prompt)
-    sources=[]
-    for point in points:
-        payload = point.payload or {}
-        sources.append({
-            "document_name": payload.get("document_name"),
-            "title": payload.get("title"),
-            "section_title": payload.get("section_title"),
-            "score": point.score,
-            "source_urls": payload.get("source_urls", [])
-        })
-
-
-    return dict(answer=answer, sources=sources)
+    return answer
