@@ -1,59 +1,25 @@
-from langchain_core.output_parsers import StrOutputParser
+from app.rag.chain import get_rag_chain
 
-from app.rag.context_builder import build_context
-from app.rag.llm import get_llm
-from app.rag.prompt_builder import get_rag_prompt
-from app.rag.retriever import retrieve_chunks
+def answer_question(question: str,session_id: str) -> str:
 
+    question = question.strip()
+    session_id = session_id.strip()
 
-def answer_question(
-    query: str,
-    limit: int = 3,
-) -> dict:
-    if not query.strip():
-        raise ValueError("Query cannot be empty.")
-
-    results = retrieve_chunks(
-        query=query,
-        limit=limit,
-    )
-
-    documents = [
-        document
-        for document, _score in results
-    ]
-
-    context = build_context(documents)
-
-    chain = (
-        get_rag_prompt()
-        | get_llm()
-        | StrOutputParser()
-    )
-
-    answer = chain.invoke(
-        {
-            "context": context,
-            "question": query,
-        }
-    )
-
-    sources = []
-
-    for document, score in results:
-        metadata = document.metadata
-
-        sources.append(
-            {
-                "document_name": metadata.get("document_name"),
-                "title": metadata.get("title"),
-                "section_title": metadata.get("section_title"),
-                "score": score,
-                "source_urls": metadata.get("source_urls", []),
-            }
+    if not question or not session_id:
+        raise ValueError(
+            "Question, Session ID cannot be empty."
         )
 
-    return {
-        "answer": answer,
-        "sources": sources,
-    }
+
+    rag_chain = get_rag_chain()
+    answer = rag_chain.invoke(
+        {
+        "question":question
+        },
+        config={
+            "configurable": {
+                "session_id": session_id
+            }
+        }
+    )
+    return answer

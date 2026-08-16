@@ -1,30 +1,70 @@
-from app.rag.retriever import retrieve_chunks
+from app.rag.intent_router import classify_intent
+from app.rag.retriever import get_retriever
 
 
-def main() -> None:
-    query = "Tôi cần học gì để trở thành Backend Developer?"
+def test_question(question: str):
+    print("\n" + "=" * 70)
 
-    results = retrieve_chunks(
-        query=query,
-        limit=5,
+    print("QUESTION:")
+    print(question)
+
+    # 1. Phân loại câu hỏi
+    intent = classify_intent(
+        question
     )
 
-    print("QUERY:")
-    print(query)
+    print(
+        "INTENT:",
+        intent
+    )
 
-    for index, (document, score) in enumerate(results, start=1):
-        print("\n" + "=" * 70)
-        print(f"Kết quả #{index}")
-        print(f"Score: {score}")
+    # 2. Lấy retriever theo intent
+    retriever = get_retriever(
+        intent=intent,
+        k=3,
+    )
 
-        metadata = document.metadata
+    # 3. Search Qdrant
+    documents = retriever.invoke(
+        question
+    )
 
-        print("Document:", metadata.get("document_name"))
-        print("Title:", metadata.get("title"))
-        print("Section:", metadata.get("section_title"))
+    # 4. In kết quả
+    for index, document in enumerate(
+        documents,
+        start=1,
+    ):
+        print(
+            f"\nRESULT {index}"
+        )
 
-        print("\nText:")
-        print(document.page_content)
+        print(
+            "DOCUMENT TYPE:",
+            document.metadata.get(
+                "document_type"
+            )
+        )
+
+        print(
+            "TITLE:",
+            document.metadata.get(
+                "title"
+            )
+        )
+
+        print(
+            "SOURCE ID:",
+            document.metadata.get(
+                "source_id"
+            )
+        )
+
+
+def main():
+
+    test_question(
+        "Có khóa học nào về Power Pages không?"
+    )
 
 
 if __name__ == "__main__":

@@ -10,5 +10,5 @@ router = APIRouter()
 
 @router.post("/rag/ask")
 def ask_question(request: RagQuestionRequest,)->RagQuestionResponse:
-    result = answer_question(query=request.query,limit=3)
-    return RagQuestionResponse(answer=result['answer'], sources=result['sources'])
+    answer = answer_question(question=request.query,session_id=request.session_id)
+    return RagQuestionResponse(answer=answer)

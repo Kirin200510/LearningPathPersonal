@@ -1,24 +1,27 @@
-from app.rag.rag_service import answer_question
+from app.rag.chain import get_rag_chain
 
 
-def main() -> None:
-    query = "Tôi thích phân tích dữ liệu và tạo báo cáo, nghề nào phù hợp?"
+def main():
+    rag_chain = get_rag_chain()
 
-    result = answer_question(
-        query=query,
-        limit=3,
+    question = (
+        "Tôi cần học gì để "
+        "trở thành Backend Developer?"
+    )
+
+    answer = rag_chain.invoke(
+        question
     )
 
     print("QUESTION:")
-    print(query)
+    print(question)
 
-    print("\nANSWER:")
-    print(result["answer"])
+    print(
+        "\n" + "=" * 70
+    )
 
-    print("\nSOURCES:")
-
-    for source in result["sources"]:
-        print(source)
+    print("ANSWER:")
+    print(answer)
 
 
 if __name__ == "__main__":

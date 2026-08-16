@@ -1,12 +1,19 @@
 from app.rag.llm import get_llm
 
 
-def main() -> None:
-    response = get_llm().invoke(
-        "Backend Developer là gì? Trả lời ngắn gọn."
+def main():
+
+    llm = get_llm()
+
+    response = llm.invoke(
+        "Backend Developer là gì? "
+        "Trả lời trong 2 câu."
     )
 
-    print("ANSWER:")
+    print("TYPE:")
+    print(type(response))
+
+    print("\nCONTENT:")
     print(response.content)
 
 
